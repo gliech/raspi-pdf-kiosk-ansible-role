@@ -1,2 +1,34 @@
 ---
-# tasks file for raspi-pdf-kiosk
+
+- name: Install all nescessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+  with_items:
+    - toilet
+    - xserver-xorg
+    - xserver-xorg-video-fbdev
+    - xinit
+    - pciutils
+    - xinput
+    - xpdf
+    - matchbox
+  become: true
+
+- name: Make the CLI the default boot target
+  file:
+    src: /usr/lib/systemd/system/multi-user.target
+    dest: /etc/systemd/system/default.target
+    owner: root
+    group: root
+    state: link
+  become: true
+
+- name: Write the pi user into the auto login service
+  lineinfile:
+    path: /etc/systemd/system/autologin@.service
+    state: present
+    regexp: '^ExecStart=-/sbin/agetty --autologin \S+ (.*)$'
+    line: 'ExecStart=-/sbin/agetty --autologin pi \1'
+    backrefs: yes
