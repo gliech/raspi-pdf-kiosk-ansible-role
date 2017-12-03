@@ -3,7 +3,7 @@ raspi_pdf_kiosk_user: pi
 raspi_pdf_kiosk_pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
 
 raspi_pdf_kiosk_refresh:
-  weekday: 1
+  weekday: *
   # Raspbian defaults to UTC+0. Set the timezone manually or calculate the hour
   # accordingly.
   hour: 3
@@ -24,7 +24,7 @@ raspi_pdf_kiosk_friday_afternoon:
   weekday: 5
   # Raspbian defaults to UTC+0. Set the timezone manually or calculate the hour
   # accordingly.
-  hour: 13
+  hour: 15
   # Should not be 0 since the day of the day of the week and the hour are also
   # used to determine wether the script gets triggered when xpdf is closed.
   minute: 55

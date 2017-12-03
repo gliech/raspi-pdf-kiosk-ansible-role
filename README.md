@@ -28,7 +28,7 @@ There are no variables that are truly required for the role to function. However
     - `line_delay` (default: `0.04`): Delay in seconds between lines of scrolling text
     - `chars_per_line` (default: `34`): Chars of the message that will be displayed per line. 34 should be a good default for a 1080p resolution. For more information see `defaults/main.yml`
     - `weekday` (default: `5`): Day and time to show the message in Cron notation
-    - `hour` (default: `13`)
+    - `hour` (default: `15`)
     - `minute` (default: `55`)
 
 Dependencies
