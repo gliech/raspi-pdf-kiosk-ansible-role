@@ -14,21 +14,71 @@
     - xinput
     - xpdf
     - matchbox
-  become: true
+  become: yes
+
+# The following 3 tasks replicate what the raspi-config tool does when setting
+# up auto-login to the CLI
 
 - name: Make the CLI the default boot target
   file:
-    src: /usr/lib/systemd/system/multi-user.target
+    src: /lib/systemd/system/multi-user.target
     dest: /etc/systemd/system/default.target
     owner: root
     group: root
     state: link
-  become: true
+  become: yes
 
-- name: Write the pi user into the auto login service
+- name: Write the pi user into the auto-login service
   lineinfile:
     path: /etc/systemd/system/autologin@.service
     state: present
     regexp: '^ExecStart=-/sbin/agetty --autologin \S+ (.*)$'
-    line: 'ExecStart=-/sbin/agetty --autologin pi \1'
+    line: "ExecStart=-/sbin/agetty --autologin {{ raspi_pdf_kiosk_user }} \\1"
     backrefs: yes
+  become: yes
+
+- name: Set the first VT to start the auto-login service
+  file:
+    src: /etc/systemd/system/autologin@.service
+    dest: /etc/systemd/system/getty.target.wants/getty@tty1.service
+    owner: root
+    group: root
+    state: link
+  become: yes
+
+- name: Place the xinitrc that starts the PDF viewer
+  copy:
+    src: xinitrc
+    dest: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/.xinitrc"
+    mode: 0644
+    owner: "{{ raspi_pdf_kiosk_user }}"
+    group: "{{ raspi_pdf_kiosk_user }}"
+  become: yes
+
+- name: Put the main kiosk script on the client
+  template:
+    src: raspi-pdf-kiosk.sh.j2
+    dest: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/raspi-pdf-kiosk.sh"
+    mode: 0755
+    owner: "{{ raspi_pdf_kiosk_user }}"
+    group: "{{ raspi_pdf_kiosk_user }}"
+  become: yes
+
+- name: Run the kiosk script from the auto-login users bashrc
+  lineinfile:
+    path: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/.bashrc"
+    line: '~/raspi_pdf_kiosk.sh'
+    state: present
+    insertafter: EOF
+  become: yes
+
+- name: Reboot the pi to refresh the pdf file
+  cron:
+    cron_file: /etc/crontab
+    user: root
+    name: "reboot to refresh raspi-pdf-kiosk"
+    job: systemctl reboot
+    weekday: "{{ raspi_pdf_kiosk_refresh.weekday }}"
+    hour: "{{ raspi_pdf_kiosk_refresh.hour }}"
+    minute: "{{ raspi_pdf_kiosk_refresh.minute }}"
+  become: yes

@@ -1,2 +1,15 @@
 ---
-# defaults file for raspi-pdf-kiosk
+raspi_pdf_kiosk_user: pi
+raspi_pdf_kiosk_pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
+raspi_pdf_kiosk_refresh:
+  weekday: 1
+  hour: 3
+  minute: 30
+raspi_pdf_kiosk_friday_afternoon:
+  active: no
+  message: Besprechung_
+  line_delay: 0.04
+  chars_per_line: 34
+  weekday: 5
+  hour: 13
+  minute: 55

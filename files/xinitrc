@@ -1,0 +1,8 @@
+#!/bin/bash
+
+xset -dpms
+xset s off
+xset s noblank
+matchbox-window-manager &
+unclutter -idle 0 &
+xpdf -fullscreen ~/raspi-pdf-kiosk.pdf

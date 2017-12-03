@@ -1,0 +1,24 @@
+#!/bin/bash
+
+message="Besprechung_"
+
+a=0
+while true; do 
+    while read -n1 i ; do 
+        if [[ $i == _ ]]; then 
+            printf ' ' 
+        else
+	    printf "$i"
+        fi
+        a=$(( $a+1 ))
+        if (( $a == 13 )); then
+            printf '\n'
+            a=0
+        fi
+    done < <(echo -n "$message")
+done |
+toilet -F gay -t |
+while IFS= read line; do
+    printf '%s\n' "$line"
+    sleep 0.04
+done
