@@ -1,15 +1,26 @@
 ---
 raspi_pdf_kiosk_user: pi
 raspi_pdf_kiosk_pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
+
 raspi_pdf_kiosk_refresh:
   weekday: 1
   hour: 3
   minute: 30
+
 raspi_pdf_kiosk_friday_afternoon:
   active: yes
+  # Message displayed, underscores get replaced by spaces
   message: Besprechung_
+  # Delay between printing 2 lined to the screen
   line_delay: 0.04
-  chars_per_line: 13
+  # Chars of the message that will be displayed on one line. This varies
+  # depending on screen resolution, terminal font, and ASCII Art font used.
+  # 34 should be the right width for a 1080p screen and the default terminal on
+  # a Raspbian.
+  chars_per_line: 34
+  # When to activate the Script
   weekday: 5
   hour: 13
+  # Should not be 0 since the day of the day of the week and the hour are also
+  # used to determine wether the script gets triggered when xpdf is closed.
   minute: 55
