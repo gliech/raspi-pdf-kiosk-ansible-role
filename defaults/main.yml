@@ -10,7 +10,7 @@ raspi_pdf_kiosk_refresh:
   minute: 30
 
 raspi_pdf_kiosk_friday_afternoon:
-  active: yes
+  active: no
   # Message displayed, underscores get replaced by spaces
   message: Besprechung_
   # Delay between printing 2 lined to the screen

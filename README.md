@@ -1,38 +1,57 @@
-Role Name
-=========
+Raspi PDF Kiosk
+===============
 
-A brief description of the role goes here.
+This Ansible Role implements a simple info-kiosk for the Raspberry Pi. A Raspberry Pi configured with this role will download a PDF file and automatically display it to the HDMI out every time it is booted. It can also display a message in scrolling rainbow ASCII art once a week.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+The role is supposed to be used with Raspbian Light. It requires a working network connection to download the PDF. It is also a good idea to make sure that the Raspberries timezone is configured correctly.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Required Variables ###
+
+There are no variables that are truly required for the role to function. However `raspi_pdf_kiosk_pdf_uri` is set so the Raspberry Pi will display a shedule for a certain canteen of the RWTH Aachen University by default. So you might want to change that.
+
+### Optional Variables ###
+
+- `raspi_pdf_kiosk_user` (default: `pi`): User that will be used to display the PDF
+- `raspi_pdf_kiosk_refresh`: The Pi will reboot once per day to refresh the displayed PDF. All subvariables except their respective Cron notation.
+    - `weekday` (default: `*`)
+    - `hour` (default: `3`)
+    - `minute` (default: `30`)
+- `raspi_pdf_kiosk_friday_afternoon`:
+    - `active` (default: `no`): Boolean that determins wether the friday afternoon script gets installed
+    - `message` (default: `Besprechung_`): Message to display once a week. Underscores get replaced by spaces in the final message.
+    - `line_delay` (default: `0.04`): Delay in seconds between lines of scrolling text
+    - `chars_per_line` (default: `34`): Chars of the message that will be displayed per line. 34 should be a good default for a 1080p resolution. For more information see `defaults/main.yml`
+    - `weekday` (default: `5`): Day and time to show the message in Cron notation
+    - `hour` (default: `13`)
+    - `minute` (default: `55`)
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+none
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: raspi
+  roles:
+    - role: gliech.raspi_pdf_kiosk
+      raspi_pdf_kiosk_pdf_uri: http://www.example.com/kiosk.pdf
+      raspi_pdf_kiosk_refresh.weekday: 1
+      raspi_pdf_kiosk_friday_afternoon.active: yes
+      raspi_pdf_kiosk_friday_afternoon.message: Happy_Early_Weekend_
+      raspi_pdf_kiosk_friday_afternoon.hour: 13
+```
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
