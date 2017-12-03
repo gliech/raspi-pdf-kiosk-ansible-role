@@ -1,1 +1,0 @@
-a=0; while true; do for i in B e s p r e c h u n g k ; do if [[ $i == k ]]; then printf ' '; else printf $i; fi; a=$(( $a+1 )); if (( $a == 34 )); then printf '\n'; a=0; fi; done; done | toilet -F gay -w 1920 | while IFS= read line; do printf '%s\n' "$line"; sleep 0.04; done
