@@ -67,7 +67,7 @@
 - name: Run the kiosk script from the auto-login users bashrc
   lineinfile:
     path: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/.bashrc"
-    line: '~/raspi_pdf_kiosk.sh'
+    line: '~/raspi-pdf-kiosk.sh'
     state: present
     insertafter: EOF
   become: yes
