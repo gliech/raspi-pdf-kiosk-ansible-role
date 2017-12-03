@@ -6,7 +6,7 @@ This Ansible Role implements a simple info-kiosk for the Raspberry Pi. A Raspber
 Requirements
 ------------
 
-The role is supposed to be used with Raspbian Light. It requires a working network connection to download the PDF. It is also a good idea to make sure that the Raspberries timezone is configured correctly.
+The role is supposed to be used with Raspbian Light. It requires a working network connection to download the PDF. It is also a good idea to make sure that the Raspberries timezone and display are configured correctly
 
 Role Variables
 --------------
