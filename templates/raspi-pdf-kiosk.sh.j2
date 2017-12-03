@@ -10,7 +10,7 @@ wget -O ~/raspi-pdf-kiosk.pdf '{{ raspi_pdf_kiosk_pdf_uri }}' > /dev/null
 startx
 
 {% if raspi_pdf_kiosk_friday_afternoon.active %}
-if [[ $( date +'%u%H' ) == '513' ]]; then
+if [[ $( date +'%u%H' ) == '{{ raspi_pdf_kiosk_friday_afternoon.weekday }}{{ raspi_pdf_kiosk_friday_afternoon.hour }}' ]]; then
     ~/friday-afternoon.sh
 fi
 {% endif %}

@@ -82,3 +82,6 @@
     hour: "{{ raspi_pdf_kiosk_refresh.hour }}"
     minute: "{{ raspi_pdf_kiosk_refresh.minute }}"
   become: yes
+
+- import_tasks: friday-afternoon.yml
+  when: raspi_pdf_kiosk_friday_afternoon.active

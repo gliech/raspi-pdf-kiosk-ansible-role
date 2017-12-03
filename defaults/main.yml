@@ -6,10 +6,10 @@ raspi_pdf_kiosk_refresh:
   hour: 3
   minute: 30
 raspi_pdf_kiosk_friday_afternoon:
-  active: no
+  active: yes
   message: Besprechung_
   line_delay: 0.04
-  chars_per_line: 34
+  chars_per_line: 13
   weekday: 5
   hour: 13
   minute: 55

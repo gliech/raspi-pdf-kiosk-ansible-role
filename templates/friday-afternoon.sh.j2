@@ -1,17 +1,19 @@
 #!/bin/bash
 
-message="Besprechung_"
+message="{{ raspi_pdf_kiosk_friday_afternoon.message }}"
+line_delay="{{ raspi_pdf_kiosk_friday_afternoon.line_delay }}"
+chars_per_line="{{ raspi_pdf_kiosk_friday_afternoon.chars_per_line }}"
 
 a=0
-while true; do 
-    while read -n1 i ; do 
-        if [[ $i == _ ]]; then 
-            printf ' ' 
+while true; do
+    while read -n1 i ; do
+        if [[ $i == _ ]]; then
+            printf ' '
         else
 	    printf "$i"
         fi
         a=$(( $a+1 ))
-        if (( $a == 13 )); then
+        if (( $a == $chars_per_line )); then
             printf '\n'
             a=0
         fi
@@ -20,5 +22,5 @@ done |
 toilet -F gay -t |
 while IFS= read line; do
     printf '%s\n' "$line"
-    sleep 0.04
+    sleep $line_delay
 done
