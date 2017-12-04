@@ -33,7 +33,7 @@
     path: /etc/systemd/system/autologin@.service
     state: present
     regexp: '^ExecStart=-/sbin/agetty --autologin \S+ (.*)$'
-    line: "ExecStart=-/sbin/agetty --autologin {{ raspi_pdf_kiosk_user }} \\1"
+    line: "ExecStart=-/sbin/agetty --autologin {{ raspi_kiosk_user }} \\1"
     backrefs: yes
   become: yes
 
@@ -49,25 +49,25 @@
 - name: Place the xinitrc that starts the PDF viewer
   copy:
     src: xinitrc
-    dest: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/.xinitrc"
+    dest: "{{ '~' + raspi_kiosk_user | expanduser }}/.xinitrc"
     mode: 0644
-    owner: "{{ raspi_pdf_kiosk_user }}"
-    group: "{{ raspi_pdf_kiosk_user }}"
+    owner: "{{ raspi_kiosk_user }}"
+    group: "{{ raspi_kiosk_user }}"
   become: yes
 
 - name: Put the main kiosk script on the client
   template:
-    src: raspi-pdf-kiosk.sh.j2
-    dest: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/raspi-pdf-kiosk.sh"
+    src: raspi-kiosk.sh.j2
+    dest: "{{ '~' + raspi_kiosk_user | expanduser }}/raspi-kiosk.sh"
     mode: 0755
-    owner: "{{ raspi_pdf_kiosk_user }}"
-    group: "{{ raspi_pdf_kiosk_user }}"
+    owner: "{{ raspi_kiosk_user }}"
+    group: "{{ raspi_kiosk_user }}"
   become: yes
 
 - name: Run the kiosk script from the auto-login users bashrc
   lineinfile:
-    path: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/.bashrc"
-    line: '~/raspi-pdf-kiosk.sh'
+    path: "{{ '~' + raspi_kiosk_user | expanduser }}/.bashrc"
+    line: '~/raspi-kiosk.sh'
     state: present
     insertafter: EOF
   become: yes
@@ -76,12 +76,12 @@
   cron:
     cron_file: /etc/crontab
     user: root
-    name: "reboot to refresh raspi-pdf-kiosk"
+    name: "reboot to refresh raspi-kiosk"
     job: systemctl reboot
-    weekday: "{{ raspi_pdf_kiosk_refresh.weekday }}"
-    hour: "{{ raspi_pdf_kiosk_refresh.hour }}"
-    minute: "{{ raspi_pdf_kiosk_refresh.minute }}"
+    weekday: "{{ raspi_kiosk_refresh.weekday }}"
+    hour: "{{ raspi_kiosk_refresh.hour }}"
+    minute: "{{ raspi_kiosk_refresh.minute }}"
   become: yes
 
 - import_tasks: friday-afternoon.yml
-  when: raspi_pdf_kiosk_friday_afternoon.active
+  when: raspi_kiosk_friday_afternoon.active

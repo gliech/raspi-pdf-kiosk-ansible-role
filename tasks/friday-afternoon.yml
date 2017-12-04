@@ -3,19 +3,19 @@
 - name: Put the friday afternoon script on the client
   template:
     src: friday-afternoon.sh.j2
-    dest: "{{ '~' + raspi_pdf_kiosk_user | expanduser }}/friday-afternoon.sh"
+    dest: "{{ '~' + raspi_kiosk_user | expanduser }}/friday-afternoon.sh"
     mode: 0755
-    owner: "{{ raspi_pdf_kiosk_user }}"
-    group: "{{ raspi_pdf_kiosk_user }}"
+    owner: "{{ raspi_kiosk_user }}"
+    group: "{{ raspi_kiosk_user }}"
   become: yes
 
 - name: Kill the PDF viewer if it is time
   cron:
     cron_file: /etc/crontab
     user: root
-    name: "kill the viewer used by raspi-pdf-kiosk"
+    name: "kill the viewer used by raspi-kiosk"
     job: killall xpdf.real
-    weekday: "{{ raspi_pdf_kiosk_friday_afternoon.weekday }}"
-    hour: "{{ raspi_pdf_kiosk_friday_afternoon.hour }}"
-    minute: "{{ raspi_pdf_kiosk_friday_afternoon.minute }}"
+    weekday: "{{ raspi_kiosk_friday_afternoon.weekday }}"
+    hour: "{{ raspi_kiosk_friday_afternoon.hour }}"
+    minute: "{{ raspi_kiosk_friday_afternoon.minute }}"
   become: yes

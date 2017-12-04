@@ -1,0 +1,16 @@
+#!/bin/bash
+
+while ! ping -c1 {{ raspi_kiosk_pdf_uri | urlsplit('hostname') }} &> /dev/null ; do
+    sleep 2
+    echo 'Could not connect to {{ raspi_kiosk_pdf_uri | urlsplit('hostname') }}. Retrying in 2 Seconds.'
+done
+
+wget -O ~/raspi-kiosk.pdf '{{ raspi_kiosk_pdf_uri }}' > /dev/null
+
+startx
+
+{% if raspi_kiosk_friday_afternoon.active %}
+if [[ $( date +'%u%H' ) == '{{ raspi_kiosk_friday_afternoon.weekday }}{{ raspi_kiosk_friday_afternoon.hour }}' ]]; then
+    ~/friday-afternoon.sh
+fi
+{% endif %}
