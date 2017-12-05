@@ -24,12 +24,12 @@ raspi_kiosk_apps:
       - xpdf
       - matchbox
       - unclutter
-    files:
+    templates:
       - src: xinitrc
         dest: "~{{ raspi_kiosk_user }}/.xinitrc"
         mode: 0644
     vars:
-      pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
+      pdf_location: ~/test.pdf
 
   - name: Besprechung
     command: ~/friday-afternoon.sh

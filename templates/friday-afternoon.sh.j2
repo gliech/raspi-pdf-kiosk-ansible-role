@@ -1,8 +1,8 @@
 #!/bin/bash
 
-message="{{ raspi_kiosk_friday_afternoon.message }}"
-line_delay="{{ raspi_kiosk_friday_afternoon.line_delay }}"
-chars_per_line="{{ raspi_kiosk_friday_afternoon.chars_per_line }}"
+message="{{ app.vars.message }}"
+line_delay="{{ app.vars.line_delay }}"
+chars_per_line="{{ app.vars.chars_per_line }}"
 
 a=0
 while true; do

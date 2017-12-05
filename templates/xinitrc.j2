@@ -5,4 +5,4 @@ xset s off
 xset s noblank
 matchbox-window-manager &
 unclutter -idle 0 &
-xpdf -fullscreen ~/raspi-kiosk.pdf
+xpdf -fullscreen {{ app.vars.pdf_location }}
