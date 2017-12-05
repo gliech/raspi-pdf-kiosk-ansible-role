@@ -1,33 +1,6 @@
 ---
 raspi_kiosk_user: pi
-raspi_kiosk_pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
-
-raspi_kiosk_refresh:
-  weekday: '*'
-  # Raspbian defaults to UTC+0. Set the timezone manually or calculate the hour
-  # accordingly.
-  hour: 3
-  minute: 30
-
-raspi_kiosk_friday_afternoon:
-  active: no
-  # Message displayed, underscores get replaced by spaces
-  message: Besprechung_
-  # Delay between printing 2 lined to the screen
-  line_delay: 0.04
-  # Chars of the message that will be displayed on one line. This varies
-  # depending on screen resolution, terminal font, and ASCII Art font used.
-  # 34 should be the right width for a 1080p screen and the default terminal on
-  # a Raspbian.
-  chars_per_line: 34
-  # When to activate the Script
-  weekday: 5
-  # Raspbian defaults to UTC+0. Set the timezone manually or calculate the hour
-  # accordingly.
-  hour: 15
-  # Should not be 0 since the day of the day of the week and the hour are also
-  # used to determine wether the script gets triggered when xpdf is closed.
-  minute: 55
+raspi_kiosk_group: "{{ raspi_kiosk_user }}"
 
 raspi_kiosk_apps:
   - name: PDF-Viewer
@@ -53,8 +26,11 @@ raspi_kiosk_apps:
       - unclutter
     files:
       - src: xinitrc
-        dest: $HOME/.xinitrc
+        dest: "~{{ raspi_kiosk_user }}/.xinitrc"
         mode: 0644
+    vars:
+      pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
+
   - name: Besprechung
     command: ~/friday-afternoon.sh
     timeout: yes
@@ -67,10 +43,19 @@ raspi_kiosk_apps:
     slot_end_weekday: 1
     slot_end_hour: 17
     slot_end_minute: 00
-    packages: 
+    packages:
       - toilet
-      - unclutter
     templates:
       - src: friday-afternoon.sh.j2
         dest: $HOME/friday-afternoon
         mode: 0755
+    vars:
+      # Message displayed, underscores get replaced by spaces
+      message: Besprechung_
+      # Delay between printing 2 lined to the screen
+      line_delay: 0.04
+      # Chars of the message that will be displayed on one line. This varies
+      # depending on screen resolution, terminal font, and ASCII Art font used.
+      # 34 should be the right width for a 1080p screen and the default terminal
+      # on a Raspbian.
+      chars_per_line: 34

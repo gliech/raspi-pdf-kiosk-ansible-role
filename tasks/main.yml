@@ -43,7 +43,7 @@
     dest: "{{ '~' + raspi_kiosk_user | expanduser }}/raspi-kiosk.sh"
     mode: 0755
     owner: "{{ raspi_kiosk_user }}"
-    group: "{{ raspi_kiosk_user }}"
+    group: "{{ raspi_kiosk_group }}"
   become: yes
 
 - name: Add the main script to the bashrc of the kiosk user 
@@ -54,3 +54,8 @@
     insertafter: EOF
   become: yes
 
+- include_tasks: application.yml
+  with_items: "{{ raspi_kiosk_apps }}"
+  loop_control:
+    loop_var: app
+    label: app.name

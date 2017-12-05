@@ -1,0 +1,20 @@
+---
+- name: "Copy files for {{app.name}}"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest | expanduser }}"
+    mode: "{{ item.mode | default(omit) }}"
+    owner: "{{ item.owner | default(raspi_kiosk_user) }}"
+    group: "{{ item.group | default(raspi_kiosk_group) }}"
+  with_items: "{{ app.files }}"
+  become: yes
+
+- name: "Copy templates for {{app.name}}"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest | expanduser }}"
+    mode: "{{ item.mode | default(omit) }}"
+    owner: "{{ item.owner | default(raspi_kiosk_user) }}"
+    group: "{{ item.group | default(raspi_kiosk_group) }}"
+  with_items: "{{ app.templates }}"
+  become: yes
