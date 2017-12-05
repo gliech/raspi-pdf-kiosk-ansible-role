@@ -8,6 +8,7 @@
     group: "{{ item.group | default(raspi_kiosk_group) }}"
   with_items: "{{ app.files }}"
   become: yes
+  when: app.files is defined and app.files is not none
 
 - name: "Copy templates for {{app.name}}"
   template:
@@ -18,3 +19,4 @@
     group: "{{ item.group | default(raspi_kiosk_group) }}"
   with_items: "{{ app.templates }}"
   become: yes
+  when: app.templates is defined and app.templates is not none
