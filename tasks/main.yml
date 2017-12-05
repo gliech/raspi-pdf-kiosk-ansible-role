@@ -1,21 +1,4 @@
 ---
-
-- name: Install all nescessary packages
-  apt:
-    name: "{{ item }}"
-    state: present
-    install_recommends: no
-  with_items:
-    - toilet
-    - xserver-xorg
-    - xserver-xorg-video-fbdev
-    - xinit
-    - pciutils
-    - xinput
-    - xpdf
-    - matchbox
-  become: yes
-
 # The following 3 tasks replicate what the raspi-config tool does when setting
 # up auto-login to the CLI
 
@@ -28,7 +11,7 @@
     state: link
   become: yes
 
-- name: Write the pi user into the auto-login service
+- name: Write the kiosk user into the auto-login service
   lineinfile:
     path: /etc/systemd/system/autologin@.service
     state: present
@@ -46,16 +29,15 @@
     state: link
   become: yes
 
-- name: Place the xinitrc that starts the PDF viewer
-  copy:
-    src: xinitrc
-    dest: "{{ '~' + raspi_kiosk_user | expanduser }}/.xinitrc"
-    mode: 0644
-    owner: "{{ raspi_kiosk_user }}"
-    group: "{{ raspi_kiosk_user }}"
+- name: Install all packages requested by applications
+  apt:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+  with_items: "{{ raspi_kiosk_apps | selectattr('packages', 'defined') | rejectattr('packages', 'none') | sum(attribute='packages', start=[]) | unique }}"
   become: yes
 
-- name: Put the main kiosk script on the client
+- name: Assemble the main script and copy it to the client
   template:
     src: raspi-kiosk.sh.j2
     dest: "{{ '~' + raspi_kiosk_user | expanduser }}/raspi-kiosk.sh"
@@ -64,7 +46,7 @@
     group: "{{ raspi_kiosk_user }}"
   become: yes
 
-- name: Run the kiosk script from the auto-login users bashrc
+- name: Add the main script to the bashrc of the kiosk user 
   lineinfile:
     path: "{{ '~' + raspi_kiosk_user | expanduser }}/.bashrc"
     line: '~/raspi-kiosk.sh'
@@ -72,16 +54,3 @@
     insertafter: EOF
   become: yes
 
-- name: Reboot the pi to refresh the pdf file
-  cron:
-    cron_file: /etc/crontab
-    user: root
-    name: "reboot to refresh raspi-kiosk"
-    job: systemctl reboot
-    weekday: "{{ raspi_kiosk_refresh.weekday }}"
-    hour: "{{ raspi_kiosk_refresh.hour }}"
-    minute: "{{ raspi_kiosk_refresh.minute }}"
-  become: yes
-
-- import_tasks: friday-afternoon.yml
-  when: raspi_kiosk_friday_afternoon.active

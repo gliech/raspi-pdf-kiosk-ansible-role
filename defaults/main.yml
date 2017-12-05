@@ -3,7 +3,7 @@ raspi_kiosk_user: pi
 raspi_kiosk_pdf_uri: http://www.studierendenwerk-aachen.de/files/content/Downloads/Gastronomie/Speiseplaene/speiseplan_mensa_vita_diese_woche.pdf
 
 raspi_kiosk_refresh:
-  weekday: *
+  weekday: '*'
   # Raspbian defaults to UTC+0. Set the timezone manually or calculate the hour
   # accordingly.
   hour: 3
@@ -28,3 +28,49 @@ raspi_kiosk_friday_afternoon:
   # Should not be 0 since the day of the day of the week and the hour are also
   # used to determine wether the script gets triggered when xpdf is closed.
   minute: 55
+
+raspi_kiosk_apps:
+  - name: PDF-Viewer
+    command: startx
+    timeout: yes
+    timeout_delay: 15s
+    timeout_command: killall xpdf.real
+    slot_default: yes
+    slot_start_weekday:
+    slot_start_hour:
+    slot_start_minute:
+    slot_end_weekday:
+    slot_end_hour:
+    slot_end_minute:
+    packages:
+      - xserver-xorg
+      - xserver-xorg-video-fbdev
+      - xinit
+      - pciutils
+      - xinput
+      - xpdf
+      - matchbox
+      - unclutter
+    files:
+      - src: xinitrc
+        dest: $HOME/.xinitrc
+        mode: 0644
+  - name: Besprechung
+    command: ~/friday-afternoon.sh
+    timeout: yes
+    timeout_delay: 15s
+    timeout_command: sudo systemctl reboot
+    slot_default: no
+    slot_start_weekday: 1
+    slot_start_hour: 14
+    slot_start_minute: 00
+    slot_end_weekday: 1
+    slot_end_hour: 17
+    slot_end_minute: 00
+    packages: 
+      - toilet
+      - unclutter
+    templates:
+      - src: friday-afternoon.sh.j2
+        dest: $HOME/friday-afternoon
+        mode: 0755
