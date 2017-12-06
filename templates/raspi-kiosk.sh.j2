@@ -1,7 +1,22 @@
 #!/bin/bash
 
 while true; do
-    case 1 in
-        {% for app in raspi_kiosk_apps %}
+    # Assign the current day of the week, hour and minute to $day, $hour and 
+    # $min
+    $(date +'let day=%w%n let hour=%H%n let min=%M')
+
+    case 2 in
+        {% for app in raspi_kiosk_apps | rejectattr('slot_default') %}
+        # {{ app.name }}
+	$(( ( {{ app.slot_start_weekday }} < day || ( {{ app.slot_start_weekday }} == day && ( {{ app.slot_start_hour }} < hour || ( {{ app.slot_start_hour }} == hour && {{ app.slot_start_minute }} <= min ) ) ) ) +
+	    ( {{ app.slot_end_weekday }} > day || ( {{ app.slot_end_weekday }} == day && ( {{ app.slot_end_hour }} > hour || ( {{ app.slot_end_hour }} == hour && {{ app.slot_end_minute }} > min ) ) ) ) +
+	    {{ app.slot_start_weekday > app.slot_end_weekday or ( app.slot_start_weekday == app.slot_end_weekday and ( app.slot_start_hour > app.slot_end_hour or ( app.slot_start_hour == app.slot_end_hour and app.slot_start_minute > app.slot_end_minute ) ) ) | int }} )))
+            {% if app.timeout %}
+            timeout {{ app.timeout_delay }} {{ app.command }}
+            {% else %}
+            {{ app.command }}
+            {% endif %} 
+            ;;
+        {% endfor %}
     esac
 done
