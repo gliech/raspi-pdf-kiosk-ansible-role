@@ -20,12 +20,10 @@ while true; do
         {% endfor %}
         {% set defaultapps = raspi_kiosk_apps | selectattr('slot_default') %}
         {% if defaultapps | length > 0 %}
-        {% set increment = 0 %}
         2)
             case $(( RANDOM % {{ defaultapps | length }} )) in
             {% for defaultapp in defaultapps %}
-                {{ increment }})
-                {% set increment += 1 %}
+                {{ loop.index0 }})
                     {% if defaultapp.timeout %}
                     timeout {{ defaultapp.timeout_delay }} {{ defaultapp.command }}
                     {% else %}
