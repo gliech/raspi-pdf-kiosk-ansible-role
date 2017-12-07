@@ -24,7 +24,8 @@ while true; do
         2)
             case $(( RANDOM % {{ defaultapps | length }} )) in
             {% for defaultapp in defaultapps %}
-                {{ defaultapps }})
+                {{ increment }})
+                {% set increment += 1 %}
                     {% if defaultapp.timeout %}
                     timeout {{ defaultapp.timeout_delay }} {{ defaultapp.command }}
                     {% else %}
