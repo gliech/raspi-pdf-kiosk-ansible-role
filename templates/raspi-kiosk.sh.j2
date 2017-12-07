@@ -8,15 +8,32 @@ while true; do
     case 2 in
         {% for app in raspi_kiosk_apps | rejectattr('slot_default') %}
         # {{ app.name }}
-	$(( ( {{ app.slot_start_weekday }} < day || ( {{ app.slot_start_weekday }} == day && ( {{ app.slot_start_hour }} < hour || ( {{ app.slot_start_hour }} == hour && {{ app.slot_start_minute }} <= min ) ) ) ) +
-	    ( {{ app.slot_end_weekday }} > day || ( {{ app.slot_end_weekday }} == day && ( {{ app.slot_end_hour }} > hour || ( {{ app.slot_end_hour }} == hour && {{ app.slot_end_minute }} > min ) ) ) ) +
-	    {{ app.slot_start_weekday > app.slot_end_weekday or ( app.slot_start_weekday == app.slot_end_weekday and ( app.slot_start_hour > app.slot_end_hour or ( app.slot_start_hour == app.slot_end_hour and app.slot_start_minute > app.slot_end_minute ) ) ) | int }} )))
+        $(( ( {{ app.slot_start_weekday }} < day || ( {{ app.slot_start_weekday }} == day && ( {{ app.slot_start_hour }} < hour || ( {{ app.slot_start_hour }} == hour && {{ app.slot_start_minute }} <= min ) ) ) ) +
+            ( {{ app.slot_end_weekday }} > day || ( {{ app.slot_end_weekday }} == day && ( {{ app.slot_end_hour }} > hour || ( {{ app.slot_end_hour }} == hour && {{ app.slot_end_minute }} > min ) ) ) ) +
+            {{ app.slot_start_weekday > app.slot_end_weekday or ( app.slot_start_weekday == app.slot_end_weekday and ( app.slot_start_hour > app.slot_end_hour or ( app.slot_start_hour == app.slot_end_hour and app.slot_start_minute > app.slot_end_minute ) ) ) | int }} )))
             {% if app.timeout %}
             timeout {{ app.timeout_delay }} {{ app.command }}
             {% else %}
             {{ app.command }}
-            {% endif %} 
+            {% endif %}
             ;;
         {% endfor %}
+        {% set defaultapps = raspi_kiosk_apps | selectattr('slot_default') %}
+        {% if defaultapps | length > 0 %}
+        {% set increment = 0 %}
+        2)
+            case $(( RANDOM % {{ defaultapps | length }} )) in
+            {% for defaultapp in defaultapps %}
+                {{ defaultapps }})
+                    {% if defaultapp.timeout %}
+                    timeout {{ defaultapp.timeout_delay }} {{ defaultapp.command }}
+                    {% else %}
+                    {{ defaultapp.command }}
+                    {% endif %}
+                    ;;
+            {% endfor %}
+            esac
+            ;;
+        {% endif %}
     esac
 done
