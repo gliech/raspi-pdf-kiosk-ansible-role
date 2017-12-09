@@ -25,9 +25,9 @@ raspi_kiosk_apps:
       - matchbox
       - unclutter
     templates:
-      - src: xinitrc
+      - src: xinitrc.j2
         dest: "~{{ raspi_kiosk_user }}/.xinitrc"
-        mode: 0644
+        mode: '0644'
     vars:
       pdf_location: ~/test.pdf
 
@@ -47,8 +47,8 @@ raspi_kiosk_apps:
       - toilet
     templates:
       - src: friday-afternoon.sh.j2
-        dest: $HOME/friday-afternoon
-        mode: 0755
+        dest: "~{{ raspi_kiosk_user }}/friday-afternoon"
+        mode: '0755'
     vars:
       # Message displayed, underscores get replaced by spaces
       message: Besprechung_

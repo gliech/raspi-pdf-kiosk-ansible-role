@@ -18,7 +18,7 @@ while true; do
             {% endif %}
             ;;
         {% endfor %}
-        {% set defaultapps = raspi_kiosk_apps | selectattr('slot_default') %}
+        {% set defaultapps = raspi_kiosk_apps | selectattr('slot_default') | list %}
         {% if defaultapps | length > 0 %}
         2)
             case $(( RANDOM % {{ defaultapps | length }} )) in
